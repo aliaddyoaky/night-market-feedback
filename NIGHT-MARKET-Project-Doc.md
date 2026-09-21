@@ -37,6 +37,12 @@
 
 - **游戏仓库 Game Repository**：[https://github.com/ndbac/thu-messy-kitchen/tree/master](https://github.com/ndbac/thu-messy-kitchen/tree/master)
 
+### 相关仓库 / Related Repos
+
+- **落地页仓库 Landing Page Repo**：[https://github.com/vvvv788/night-market-landing](https://github.com/vvvv788/night-market-landing)
+- **反馈报告仓库 Feedback Report Repo**：[https://github.com/aliaddyoaky/night-market-feedback/blob/main/NIGHT-MARKET-Feedback-Report.html](https://github.com/aliaddyoaky/night-market-feedback/blob/main/NIGHT-MARKET-Feedback-Report.html)
+- **项目文档仓库 Project Doc Repo**：[https://github.com/aliaddyoaky/night-market-feedback/blob/main/NIGHT-MARKET-Project-Doc.html](https://github.com/aliaddyoaky/night-market-feedback/blob/main/NIGHT-MARKET-Project-Doc.html)
+
 ---
 
 ## 4. 项目海报 / Project Poster
