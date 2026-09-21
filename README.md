@@ -8,4 +8,4 @@
 - 游戏部署链接：https://ndbac.github.io/thu-messy-kitchen/
 - 落地页：https://vvvv788.github.io/night-market-landing/
 
-> 说明：报告正文引用了 `appendix/appendix-0X.jpg` 等原始聊天截图（共 6 张），本仓库仅包含文字版报告，图片未一并上传，相关链接显示为占位。
+> 附录：`appendix/appendix-01.jpg` ~ `appendix-06.jpg` 为微信群反馈原始聊天截图（共 6 张），已随仓库一并上传。
