@@ -21,7 +21,7 @@ def embed(html_path):
         with open(img_path, 'rb') as im:
             b64 = base64.b64encode(im.read()).decode('ascii')
         print(f"  embedded {src} ({os.path.getsize(img_path)}B -> {len(b64)}B base64)")
-        return f'{pre}src="data:{mime};base64,{b64}"{post}'
+        return f'{pre}data:{mime};base64,{b64}{post}'
 
     pat = re.compile(r'(<img\b[^>]*?\ssrc=")([^"]+)(")')
     new_html, n = pat.subn(repl, html)
