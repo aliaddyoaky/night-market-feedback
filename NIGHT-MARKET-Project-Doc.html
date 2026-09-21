@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NIGHT MARKET 夜市 · 项目文档 / Project Documentation</title>
+    <meta name="description" content="NIGHT MARKET（夜市）像素风夜市美食摊经营模拟游戏 · 项目文档（中英双语）· 9market-3chefs" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+      :root {
+        --bg0: #04081c;
+        --bg1: #071430;
+        --bg2: #0b2050;
+        --panel: rgba(9, 26, 60, 0.86);
+        --panel-2: #0d2b62;
+        --line: #2b4f8f;
+        --neon: #4fa8ff;
+        --neon-bright: #78d0ff;
+        --glow: #a8e6ff;
+        --gold: #ffcf5c;
+        --flame: #ff8a3c;
+        --lantern: #e8452c;
+        --text: #e8f2ff;
+        --muted: #8fb0dd;
+        --pixel: "Press Start 2P", "Courier New", monospace;
+        --body: system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
+        --mono: "Courier New", Courier, ui-monospace, monospace;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: var(--body);
+        line-height: 1.7;
+        background:
+          radial-gradient(circle at 18% 4%, rgba(79, 168, 255, 0.16), transparent 26rem),
+          radial-gradient(circle at 82% 12%, rgba(232, 69, 44, 0.12), transparent 22rem),
+          linear-gradient(180deg, #03060f 0%, #061027 40%, #0a1c44 100%);
+        background-attachment: fixed;
+      }
+
+      /* starfield */
+      body::before {
+        content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+        background-image:
+          radial-gradient(1.5px 1.5px at 12% 18%, #cfe8ff 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 28% 62%, #9fd0ff 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 46% 30%, #fff 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 63% 74%, #cfe8ff 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 78% 22%, #9fd0ff 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 88% 58%, #fff 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 7% 82%, #9fd0ff 50%, transparent 51%),
+          radial-gradient(1.5px 1.5px at 55% 8%, #fff 50%, transparent 51%);
+        opacity: 0.6;
+      }
+
+      .wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 22px; }
+      a { color: var(--neon-bright); text-decoration: none; }
+      a:hover { color: var(--gold); }
+
+      /* ---------- Nav ---------- */
+      .nav {
+        position: fixed; top: 0; z-index: 20; width: 100%;
+        border-bottom: 3px solid rgba(43, 79, 143, 0.6);
+        background: rgba(4, 8, 28, 0.88);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.5);
+      }
+      .nav-inner {
+        display: flex; align-items: center; justify-content: space-between;
+        max-width: 1080px; margin: 0 auto; padding: 12px 22px;
+      }
+      .brand { font-family: var(--pixel); font-size: 11px; letter-spacing: 1px; color: var(--glow); text-shadow: 0 0 10px var(--neon); }
+      .nav-links { display: flex; gap: 15px; color: var(--muted); font-size: 13px; font-weight: 700; }
+      .nav-links a:hover { color: var(--neon-bright); }
+
+      /* ---------- Top tagline strip ---------- */
+      .tagline {
+        display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px;
+        margin-top: 76px; padding: 9px 22px;
+        font-family: var(--pixel); font-size: 8px; letter-spacing: 0.5px;
+        color: var(--neon-bright); border-bottom: 2px solid rgba(43, 79, 143, 0.5);
+        background: rgba(4, 8, 28, 0.5);
+      }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 44px 0 40px; }
+      .hero-grid {
+        display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+        gap: 40px; align-items: center;
+      }
+      .poster-frame {
+        position: relative; border: 4px solid var(--neon);
+        border-radius: 6px; padding: 8px; background: rgba(4, 8, 28, 0.85);
+        box-shadow: 0 0 0 3px rgba(4, 8, 28, 0.9), 0 0 34px rgba(79, 168, 255, 0.55), inset 0 0 30px rgba(79, 168, 255, 0.15);
+      }
+      .poster-frame img { display: block; width: 100%; height: auto; border-radius: 3px; }
+      .poster-frame .plate {
+        position: absolute; left: 50%; bottom: -13px; transform: translateX(-50%);
+        font-family: var(--pixel); font-size: 8px; white-space: nowrap;
+        background: var(--gold); color: #201400; padding: 5px 10px;
+        border: 2px solid #8f6a10; box-shadow: 0 0 14px rgba(255, 207, 92, 0.6);
+      }
+
+      .kicker {
+        font-family: var(--pixel); font-size: 9px; letter-spacing: 1px; color: var(--flame);
+        text-shadow: 0 0 10px rgba(255, 138, 60, 0.7);
+      }
+      h1 {
+        margin: 14px 0 0; font-family: var(--pixel); line-height: 1.36;
+        font-size: clamp(20px, 3.6vw, 34px); color: var(--glow);
+        text-shadow: 0 0 6px var(--neon), 0 0 20px var(--neon), 0 0 42px rgba(79, 168, 255, 0.7);
+      }
+      h1 .cn { display: block; margin-top: 14px; font-family: var(--body); font-weight: 900;
+        font-size: clamp(34px, 6vw, 60px); letter-spacing: 6px; color: #fff;
+        text-shadow: 0 0 8px var(--neon), 0 0 26px var(--neon), 0 0 50px rgba(79, 168, 255, 0.8); }
+      .lede { margin: 20px 0 0; color: #cfe2ff; font-weight: 600; font-size: 15px; }
+      .lede .en { display: block; margin-top: 4px; color: var(--muted); font-style: italic; font-weight: 500; font-size: 13px; }
+
+      .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+      .chip {
+        border: 2px solid var(--line); background: rgba(9, 26, 60, 0.9);
+        padding: 8px 12px; font-size: 12px; font-weight: 800; color: var(--neon-bright);
+        box-shadow: inset 0 0 14px rgba(79, 168, 255, 0.12);
+      }
+      .chip b { color: var(--gold); }
+
+      .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 26px; }
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 22px;
+        font-family: var(--pixel); font-size: 10px; letter-spacing: 0.5px;
+        color: #04122b; background: var(--neon-bright); border: 3px solid #0b3a66;
+        box-shadow: 0 0 20px rgba(120, 208, 255, 0.6); transition: transform .12s ease;
+      }
+      .btn:hover { transform: translateY(2px); color: #04122b; }
+      .btn.ghost { background: transparent; color: var(--neon-bright); border-color: var(--neon); box-shadow: inset 0 0 16px rgba(79,168,255,.25); }
+
+      /* ---------- Sections ---------- */
+      section { padding: 46px 0 8px; }
+      .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 18px; border-bottom: 2px solid rgba(43, 79, 143, 0.55); padding-bottom: 12px; }
+      .sec-num { font-family: var(--pixel); font-size: 12px; color: var(--gold); text-shadow: 0 0 10px rgba(255, 207, 92, 0.6); }
+      h2 { margin: 0; font-size: clamp(20px, 3vw, 28px); color: #fff; letter-spacing: 0.5px;
+        text-shadow: 0 0 6px rgba(79, 168, 255, 0.7); }
+      h2 .en { color: var(--muted); font-weight: 500; font-size: 0.6em; font-style: italic; }
+      h3 { margin: 24px 0 10px; font-size: 17px; color: var(--neon-bright); }
+      h3 .en { color: var(--muted); font-weight: 500; font-size: 0.82em; font-style: italic; }
+
+      .panel {
+        border: 3px solid var(--line); background: var(--panel);
+        box-shadow: 0 0 22px rgba(79, 168, 255, 0.18), inset 0 0 26px rgba(79, 168, 255, 0.06);
+        padding: 20px; margin-bottom: 16px;
+      }
+      .panel > :first-child { margin-top: 0; }
+      .panel > :last-child { margin-bottom: 0; }
+
+      .en-line { display: block; color: var(--muted); font-style: italic; font-weight: 500; font-size: 13px; margin-top: 4px; }
+
+      /* Tables */
+      .table-scroll { overflow-x: auto; }
+      table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+      th, td { text-align: left; padding: 10px 12px; border: 2px solid var(--line); vertical-align: top; }
+      thead th { background: var(--panel-2); color: var(--glow); font-weight: 900; white-space: nowrap; }
+      tbody tr:nth-child(even) { background: rgba(13, 43, 98, 0.45); }
+      td { color: var(--text); }
+      td .en { color: var(--muted); font-style: italic; font-size: 12px; display: block; }
+      code { font-family: var(--mono); background: rgba(4, 8, 28, 0.7); border: 1px solid var(--line); padding: 1px 6px; color: var(--gold); font-size: 12.5px; }
+
+      /* Lists */
+      ol, ul { padding-left: 22px; }
+      li { margin: 6px 0; }
+      .zh-en { margin: 0 0 10px; }
+      .zh-en .en { display: block; color: var(--muted); font-style: italic; font-size: 13px; margin-top: 4px; }
+
+      /* Code / arch tree */
+      pre.tree {
+        font-family: var(--mono); font-size: 12.5px; line-height: 1.6; color: #cfe8ff;
+        background: rgba(3, 6, 15, 0.85); border: 2px solid var(--line); border-left: 5px solid var(--neon);
+        padding: 16px; overflow-x: auto; margin: 0; box-shadow: inset 0 0 24px rgba(79, 168, 255, 0.08);
+      }
+
+      /* Link cards */
+      .link-card {
+        display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+        border: 3px solid var(--line); background: var(--panel); padding: 16px 18px; margin-bottom: 12px;
+        box-shadow: 0 0 20px rgba(79, 168, 255, 0.16);
+      }
+      .link-card .t { font-weight: 900; color: #fff; }
+      .link-card .u { color: var(--neon-bright); font-family: var(--mono); font-size: 13px; word-break: break-all; }
+      .link-card .go { font-family: var(--pixel); font-size: 9px; color: #04122b; background: var(--gold); border: 2px solid #8f6a10; padding: 6px 10px; white-space: nowrap; }
+
+      /* Problem cards */
+      .prob { border: 3px solid var(--line); background: var(--panel); padding: 16px 18px; margin-bottom: 14px; box-shadow: inset 0 0 22px rgba(79, 168, 255, 0.06); }
+      .prob h3 { margin-top: 0; }
+      .prob .row { display: grid; grid-template-columns: 96px 1fr; gap: 10px; margin-top: 8px; }
+      .prob .k { font-weight: 900; color: var(--gold); font-size: 13px; }
+
+      /* Priority badges */
+      .badge { display: inline-block; padding: 2px 9px; border: 2px solid #04122b; font-weight: 900; font-size: 12px; }
+      .badge.p0 { background: var(--flame); color: #2b0f06; }
+      .badge.p1 { background: var(--gold); color: #2b2406; }
+      .badge.p2 { background: var(--neon); color: #04122b; }
+
+      /* Poster section */
+      .poster-large { max-width: 620px; margin: 0 auto; }
+
+      /* CTA / footer */
+      .cta { text-align: center; padding: 40px 0 10px; }
+      .footer {
+        margin-top: 40px; border-top: 3px solid rgba(43, 79, 143, 0.55);
+        padding: 24px 22px; color: var(--muted); font-size: 13px;
+        background: rgba(3, 6, 15, 0.7); position: relative; z-index: 1;
+      }
+      .footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+      @media (max-width: 880px) {
+        .hero-grid { grid-template-columns: 1fr; gap: 30px; }
+        .tagline { margin-top: 66px; }
+        .prob .row { grid-template-columns: 1fr; gap: 2px; }
+        .nav-links { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="nav-inner">
+        <span class="brand">NIGHT&nbsp;MARKET&nbsp;夜市</span>
+        <div class="nav-links">
+          <a href="#info">项目信息</a>
+          <a href="#deploy">部署</a>
+          <a href="#poster">海报</a>
+          <a href="#play">玩法</a>
+          <a href="#tech">技术栈</a>
+          <a href="#issues">问题</a>
+          <a href="#summary">总结</a>
+          <a href="#feedback">反馈</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="tagline">
+      <span>GOOD FOOD GOOD MOOD</span>
+      <span>TASTE THE NIGHT</span>
+      <span>COOKING YOUR HAPPINESS!</span>
+      <span>A SMALL BITE A BIG WORLD</span>
+    </div>
+
+    <header class="hero">
+      <div class="wrap">
+        <div class="hero-grid">
+          <div class="poster-frame">
+            <img src="poster.jpg" alt="NIGHT MARKET 夜市 项目海报（复古街机柜造型）" />
+            <span class="plate">PROJECT&nbsp;POSTER&nbsp;v2.5</span>
+          </div>
+          <div>
+            <div class="kicker">INSERT COIN · PRESS START</div>
+            <h1>NIGHT MARKET<span class="cn">夜　市</span></h1>
+            <p class="lede">
+              像素风夜市美食摊经营模拟游戏 —— 在 7 个夜晚内把口碑做到接近满星（4.5★）。
+              <span class="en">A cozy pixel-art night-market food-stall time-management game — push your reputation to near-max (4.5★) across 7 nights.</span>
+            </p>
+            <div class="chips">
+              <span class="chip">课程 <b>26–27 AIID + IID Capstone</b></span>
+              <span class="chip">组号 <b>NO.4</b> · 组名 <b>9market-3chefs</b></span>
+              <span class="chip">日期 <b>2026.09.21</b></span>
+              <span class="chip">引擎 <b>Phaser 3.80.1</b> · 单文件</span>
+            </div>
+            <div class="actions">
+              <a class="btn" href="https://ndbac.github.io/thu-messy-kitchen/" target="_blank" rel="noopener">PLAY NOW</a>
+              <a class="btn ghost" href="https://vvvv788.github.io/night-market-landing/" target="_blank" rel="noopener">LANDING PAGE</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <!-- 01 项目信息 -->
+      <section id="info">
+        <div class="sec-head"><span class="sec-num">01</span><h2>项目信息 <span class="en">/ Project Information</span></h2></div>
+        <div class="panel">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>项目 Item</th><th>内容 Content</th></tr></thead>
+              <tbody>
+                <tr><td>课程 Course</td><td>26–27 AIID + IID Capstone Project</td></tr>
+                <tr><td>项目名 Project</td><td><b>NIGHT MARKET</b>（夜市）</td></tr>
+                <tr><td>组号 Group No.</td><td>NO.4</td></tr>
+                <tr><td>组名 Group Name</td><td><b>9market-3chefs</b></td></tr>
+                <tr><td>成员 Members</td><td>
+                  • Wok Cook（炒锅厨师）— Nguyen Dinh Bac 阮丁北<br />
+                  • Prep Cook（备料厨师）— Vivi 林子微<br />
+                  • Plate-up Cook（出餐摆盘厨师）— Snow 井思诺
+                </td></tr>
+                <tr><td>日期 Date</td><td>2026.09.21</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 部署链接 -->
+      <section id="deploy">
+        <div class="sec-head"><span class="sec-num">02</span><h2>部署链接 <span class="en">/ Deployment Links</span></h2></div>
+        <div class="panel">
+          <p class="zh-en">游戏已通过 GitHub Pages 在线部署，可直接在浏览器中游玩与展示。
+            <span class="en">The game is deployed online via GitHub Pages and can be played / demoed directly in a browser.</span></p>
+          <div class="link-card">
+            <div><div class="t">落地页 Landing Page</div><div class="u">https://vvvv788.github.io/night-market-landing/</div></div>
+            <a class="go" href="https://vvvv788.github.io/night-market-landing/" target="_blank" rel="noopener">OPEN ↗</a>
+          </div>
+          <div class="link-card">
+            <div><div class="t">游戏部署 Game</div><div class="u">https://ndbac.github.io/thu-messy-kitchen/</div></div>
+            <a class="go" href="https://ndbac.github.io/thu-messy-kitchen/" target="_blank" rel="noopener">PLAY ↗</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 仓库链接 -->
+      <section id="repo">
+        <div class="sec-head"><span class="sec-num">03</span><h2>仓库链接 <span class="en">/ Repository</span></h2></div>
+        <div class="panel">
+          <div class="link-card" style="margin-bottom:0;">
+            <div><div class="t">游戏仓库 Game Repository</div><div class="u">https://github.com/ndbac/thu-messy-kitchen/tree/master</div></div>
+            <a class="go" href="https://github.com/ndbac/thu-messy-kitchen/tree/master" target="_blank" rel="noopener">GITHUB ↗</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 项目海报 -->
+      <section id="poster">
+        <div class="sec-head"><span class="sec-num">04</span><h2>项目海报 <span class="en">/ Project Poster</span></h2></div>
+        <div class="panel">
+          <div class="poster-large"><div class="poster-frame"><img src="poster.jpg" alt="NIGHT MARKET 项目海报" /></div></div>
+          <h3 style="margin-top:26px;">海报设计说明 <span class="en">/ Poster concept</span></h3>
+          <p class="zh-en">整张海报采用复古街机柜造型，把游戏画面"嵌入"柜机的屏幕上：一位像素厨师在火焰前翻炒，四周是红灯笼、夜市招牌与菜单（饭包 / 粉面 / 烤肠 / 汉堡 / 小吃）。
+            <span class="en">The poster frames the game inside a retro arcade cabinet: a pixel chef wok-cooks over open flame, surrounded by red lanterns, night-market signage, and a menu (rice / noodle / sausage / burger / snacks).</span></p>
+        </div>
+      </section>
+
+      <!-- 05 玩法 -->
+      <section id="play">
+        <div class="sec-head"><span class="sec-num">05</span><h2>游戏玩法 / 操作说明 / 核心机制 <span class="en">/ Gameplay &amp; Mechanics</span></h2></div>
+
+        <div class="panel">
+          <h3>5.1 核心循环 <span class="en">/ Core Loop</span></h3>
+          <p class="zh-en"><b>接单 → 烹饪 → 上菜 → 结算 → 升级</b>
+            <span class="en">Order → Cook → Serve → Settle → Upgrade</span></p>
+          <ol>
+            <li>顾客到达，订单出现在气泡中（菜品图标 + 耐心条）。<span class="en-line">Customers arrive; the order appears in a speech bubble (dish icon + patience bar).</span></li>
+            <li>玩家按菜品顺序依次点击 4 个工作台（GRILL / POT / PREP / SAUCE），组装当前菜品。<span class="en-line">Click the four stations (GRILL / POT / PREP / SAUCE) in recipe order to build the current dish.</span></li>
+            <li>点击 <b>Serve</b> 将菜品递给选中的顾客；点击 <b>Trash</b> 丢弃。<span class="en-line">Click Serve to hand it to the selected customer; click Trash to discard.</span></li>
+            <li>系统弹出 1.5 秒评分卡，根据完成度发放金钱与口碑。<span class="en-line">A 1.5-second score card shows how well you did and awards money + reputation.</span></li>
+            <li>夜晚结束后进入"夜总结"，可购买升级，进入下一晚。<span class="en-line">After the night, the "summary" screen lets you buy upgrades and advance.</span></li>
+          </ol>
+        </div>
+
+        <div class="panel">
+          <h3>5.2 操作说明（全鼠标） <span class="en">/ Controls (Mouse Only)</span></h3>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>操作 Action</th><th>触发方式 How</th></tr></thead>
+              <tbody>
+                <tr><td>选取顾客 Select customer</td><td>点击左侧顾客头像 <span class="en">Click the customer on the left</span></td></tr>
+                <tr><td>添加烹饪步骤 Add step</td><td>点击对应工作台 <span class="en">Click the matching station</span></td></tr>
+                <tr><td>完成持续加热 Hold step</td><td>点击开始 → 目标窗口内再次点击结束 <span class="en">Click to start → click again within the window</span></td></tr>
+                <tr><td>上菜 Serve</td><td>点击 <b>Serve</b> 按钮 <span class="en">Click Serve</span></td></tr>
+                <tr><td>丢弃菜品 Trash</td><td>点击 <b>Trash</b> 按钮 <span class="en">Click Trash</span></td></tr>
+                <tr><td>补货 Restock</td><td>点击 <b>Restock</b>（3 秒，期间其他操作不可用）<span class="en">Click Restock (3s, blocks other actions)</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="zh-en" style="margin-top:14px;"><b>Hold 步骤说明：</b>需要"持续加热"的步骤（GRILL hold 2s / 3s），需先点击工作台开始计时，再点击同一工作台结束。评分取决于实际持时与目标时间的接近度。
+            <span class="en">For "hold" steps, click the station to start the timer, then click it again to stop. Scoring depends on how close your hold time is to the target.</span></p>
+        </div>
+
+        <div class="panel">
+          <h3>5.3 菜肴配方表 <span class="en">/ Dish Recipes</span></h3>
+          <p class="zh-en">游戏内置 <b>6 道菜</b>：前 4 道开局即可制作，后 2 道需在商店购买升级后解锁（落地页的菜单预览只展示了开局默认的 4 道）。
+            <span class="en">The game ships 6 dishes: the first 4 are available from night 1; the last 2 unlock via shop upgrades (the landing-page menu preview shows only the 4 defaults).</span></p>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>菜品 Dish</th><th>步骤 Steps</th><th>基础价 Base</th><th>解锁 Unlock</th></tr></thead>
+              <tbody>
+                <tr><td>Bánh mì（越南三明治）</td><td>PREP → GRILL(hold 2s) → SAUCE</td><td>$14</td><td>默认 Default</td></tr>
+                <tr><td>Phở（越南河粉）</td><td>POT(hold 3s) → PREP → SAUCE</td><td>$16</td><td>默认 Default</td></tr>
+                <tr><td>Satay skewers（沙爹串）</td><td>PREP → GRILL(hold 3s)</td><td>$12</td><td>默认 Default</td></tr>
+                <tr><td>Fried rice（炒饭）</td><td>PREP → GRILL(hold 2s) → SAUCE → PREP</td><td>$15</td><td>默认 Default</td></tr>
+                <tr><td>Bún chả（越式烤肉米粉）</td><td>GRILL(hold 2s) → POT(hold 3s) → SAUCE → PREP</td><td>$17</td><td>商店解锁 Shop</td></tr>
+                <tr><td>Mango sticky rice（芒果糯米饭）</td><td>POT(hold 3s) → PREP → SAUCE</td><td>$13</td><td>商店解锁 Shop</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>5.4 评分与反馈 <span class="en">/ Scoring &amp; Feedback</span></h3>
+          <p class="zh-en">每次上菜后弹出 <b>1.5 秒评分卡</b>：<span class="en">Each serve shows a 1.5-second score card:</span></p>
+          <ul>
+            <li><b>Build %</b>：步骤是否齐全、顺序是否正确。<span class="en-line">Steps complete &amp; in order.</span></li>
+            <li><b>Cook %</b>：持续加热步骤的实际持时偏差。<span class="en-line">Hold-time accuracy.</span></li>
+            <li><b>Overall %</b>：综合分数。<span class="en-line">Overall quality.</span></li>
+            <li><b>Tip</b>：本次小费。<span class="en-line">Tip earned.</span></li>
+          </ul>
+          <p class="zh-en">音效：≥ 80% 播放"叮"，&lt; 50% 播放"嗡"。<span class="en">Audio: a "ding" for ≥80%, a "buzz" for &lt;50%.</span></p>
+          <p class="zh-en"><b>奖励规则：</b><span class="en">Rewards:</span></p>
+          <ul>
+            <li><b>金钱</b> = 基础价 × Overall% + Tip。</li>
+            <li><b>口碑</b>：≥ 80% 时 +0.1 星；&lt; 50% 时 −0.1 星；顾客耐心耗尽离开时 −0.2 星。</li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h3>5.5 顾客系统 <span class="en">/ Customers</span></h3>
+          <ul>
+            <li>同时排队最多 <b>4 人</b>。<span class="en-line">Max queue: 4.</span></li>
+            <li>生成间隔：第 1 晚 <b>8–12 秒</b>，随夜数递减（下限 4–6 秒）。<span class="en-line">Spawn 8–12s on night 1, shrinks per night (floor 4–6s).</span></li>
+            <li>耐心值：第 1 晚 <b>25–40 秒</b>，随夜数递减（下限 12–18 秒）。<span class="en-line">Patience 25–40s on night 1, shrinks per night (floor 12–18s).</span></li>
+            <li>耐心条归零 → 顾客离开 → 口碑 −0.2。<span class="en-line">Empty bar → customer leaves → −0.2 star.</span></li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h3>5.6 库存系统 <span class="en">/ Inventory</span></h3>
+          <p class="zh-en">4 种食材（<b>肉 Meat / 面 Noodles / 菜 Veggies / 酱 Sauce</b>）各有独立库存，初始各 <b>20</b> 份。每次烹饪消耗对应食材；某食材耗尽时其工作台失效，直至完成 Restock。Restock 默认 3 秒，可升级至 1.5 秒。
+            <span class="en">Four ingredients (meat / noodles / veggies / sauce) each start at 20 stock. Cooking consumes them; a depleted ingredient disables its station until Restock (default 3s, upgradable to 1.5s).</span></p>
+        </div>
+
+        <div class="panel">
+          <h3>5.7 随机事件（夜 3 起） <span class="en">/ Random Events (from Night 3)</span></h3>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>事件 Event</th><th>效果 Effect</th></tr></thead>
+              <tbody>
+                <tr><td>雨天 Rain</td><td>顾客数 −40%，但每位小费 +50%。<span class="en">−40% customers, +50% tips.</span></td></tr>
+                <tr><td>美食评论家 Food critic</td><td>一位特殊顾客，耐心 ×2；完美上菜 +0.5 口碑，&lt;80% 则 −0.5。<span class="en">Double patience; +0.5 / −0.5 star on perfect / &lt;80%.</span></td></tr>
+                <tr><td>竞争摊位 Rival stall</td><td>全场顾客耐心 −30%。<span class="en">−30% patience for all.</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="zh-en" style="margin-top:12px;">事件以横幅在开场时宣告。<span class="en">Announced by a banner at night start.</span></p>
+        </div>
+
+        <div class="panel">
+          <h3>5.8 商店升级 <span class="en">/ Shop Upgrades</span></h3>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>升级 Upgrade</th><th>效果 Effect</th><th>价格 Price</th></tr></thead>
+              <tbody>
+                <tr><td>Second grill</td><td>+1 个 GRILL 工作台</td><td>$60</td></tr>
+                <tr><td>Faster restock</td><td>Restock 缩短为 1.5s</td><td>$40</td></tr>
+                <tr><td>Bigger crate</td><td>库存上限 +50%（20 → 30）</td><td>$50</td></tr>
+                <tr><td>Extra queue slot</td><td>队伍容量 +1</td><td>$45</td></tr>
+                <tr><td>Decorations</td><td>小费 +5%</td><td>$55</td></tr>
+                <tr><td>Unlock Bún chả</td><td>解锁新菜（见 §5.3 第 5 道）</td><td>$35</td></tr>
+                <tr><td>Unlock Mango sticky rice</td><td>解锁新菜（见 §5.3 第 6 道）</td><td>$35</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="zh-en" style="margin-top:12px;">升级在多个夜晚之间<b>持久生效</b>。<code>Continue</code> 入口可从存档恢复。
+            <span class="en">Upgrades persist across nights; the Continue button restores a saved run.</span></p>
+        </div>
+
+        <div class="panel">
+          <h3>5.9 教学引导（仅第 1 晚） <span class="en">/ Tutorial (Night 1 Only)</span></h3>
+          <ul>
+            <li>只出现 Bánh mì 与 Satay 两种订单，生成速率较慢。<span class="en-line">Only Bánh mì &amp; Satay orders, slower spawns.</span></li>
+            <li>首次使用任一工作台 / 首次点击 Serve 时显示气泡提示。<span class="en-line">Tooltips appear on first station use and first Serve.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 06 技术栈 -->
+      <section id="tech">
+        <div class="sec-head"><span class="sec-num">06</span><h2>技术栈 / 主要功能 / 架构简述 <span class="en">/ Tech, Features &amp; Architecture</span></h2></div>
+
+        <div class="panel">
+          <h3>6.1 技术栈 <span class="en">/ Tech Stack</span></h3>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>类别 Category</th><th>选型 Choice</th></tr></thead>
+              <tbody>
+                <tr><td>游戏框架 Engine</td><td><b>Phaser 3.80.1</b>（CDN）</td></tr>
+                <tr><td>编程语言 Language</td><td>原生 HTML / CSS / JavaScript (ES6)</td></tr>
+                <tr><td>美术 Art</td><td>Phaser Graphics API 程序化绘制（无位图资源）</td></tr>
+                <tr><td>音效 Audio</td><td>Web Audio API 程序化合成（无音频文件）</td></tr>
+                <tr><td>持久化 Persistence</td><td>localStorage（每晚保存 GameState）</td></tr>
+                <tr><td>部署 Deploy</td><td>GitHub Pages</td></tr>
+                <tr><td>协作 Collab</td><td>Git + GitHub</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>6.2 架构概览 <span class="en">/ Architecture</span></h3>
+          <p class="zh-en">整个项目是<b>单文件 <code>index.html</code></b>（仅依赖 Phaser CDN）。
+            <span class="en">The whole project is a single index.html (only the Phaser CDN is external).</span></p>
+          <pre class="tree">index.html
+├── CONFIG（数据集中区：菜品、价格、顾客名、升级、难度曲线）
+├── GameState（全局状态：night / money / reputation / upgrades / unlockedDishes）
+├── Dish          （菜品步骤匹配、计时评分）
+├── Customer      （生成 / 耐心条 / 订单 / 离开判定）
+├── Station       （工作台：步骤记录、Hold 计时、库存消耗）
+├── ShopState     （升级购买、灰色不可购买样式）
+└── Scenes
+    ├── TitleScene    （标题 + Play / How to play / Continue）
+    ├── NightScene    （主游戏：HUD + 摊位 + 队列 + 库存 + 在做面板）
+    ├── SummaryScene  （夜总结 + 商店）
+    └── EndScene      （胜利 / 失败 + 最终统计 + Play again）</pre>
+        </div>
+
+        <div class="panel">
+          <h3>6.3 主要功能 <span class="en">/ Main Features</span></h3>
+          <ul>
+            <li>4 个 Scene 之间共享状态（<code>window.GameState</code> 单例 + localStorage 持久化）。<span class="en-line">Cross-scene state via a GameState singleton + localStorage.</span></li>
+            <li>顶栏 HUD：夜晚 / 时钟 / 金钱 / 口碑星级 / 库存。</li>
+            <li>工作台点击链 + Hold 计时 + 评分算法。</li>
+            <li>1.5 秒评分卡 + 叮/嗡音效。</li>
+            <li>顾客队列 + 耐心条 + 自动生成调度器。</li>
+            <li>4 种食材库存 + Restock 阻塞 UI。</li>
+            <li>商店购买（不可购买时灰显）。</li>
+            <li>随机事件横幅。</li>
+            <li>第 1 晚教学气泡。</li>
+            <li>localStorage 存档 / Continue 恢复。</li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h3>6.4 可调参数 <span class="en">/ Tunable CONFIG (Top-Level)</span></h3>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>字段 Field</th><th>真实值 Value</th><th>说明 Notes</th></tr></thead>
+              <tbody>
+                <tr><td><code>NIGHT_SECONDS</code></td><td><code>150</code></td><td>每晚真实时长（秒）</td></tr>
+                <tr><td><code>NIGHTS</code></td><td><code>7</code></td><td>总夜数</td></tr>
+                <tr><td><code>MAX_QUEUE</code></td><td><code>4</code></td><td>最大排队人数</td></tr>
+                <tr><td><code>SPAWN</code></td><td><code>min: n⇒max(4, 8−(n−1)·0.8)</code><br /><code>max: n⇒max(6, 12−(n−1)·0.9)</code></td><td>顾客生成间隔（秒），随夜晚 n 递减；第 1 晚 8–12s，下限 4–6s</td></tr>
+                <tr><td><code>PATIENCE</code></td><td><code>min: n⇒max(12, 25−(n−1)·2)</code><br /><code>max: n⇒max(18, 40−(n−1)·2.5)</code></td><td>顾客耐心（秒），随夜晚 n 递减；第 1 晚 25–40s，下限 12–18s</td></tr>
+                <tr><td><code>START_STOCK</code></td><td><code>20</code></td><td>每种食材初始库存（Bigger crate 后上限 +50% = 30）</td></tr>
+                <tr><td><code>RESTOCK_TIME</code></td><td><code>3.0</code></td><td>默认补货耗时（秒），升级后 1.5s</td></tr>
+                <tr><td><code>START_MONEY</code></td><td><code>30</code></td><td>初始金钱</td></tr>
+                <tr><td><code>START_REP</code></td><td><code>2.5</code></td><td>初始口碑（星）</td></tr>
+                <tr><td><code>WIN_REP</code></td><td><code>4.5</code></td><td>胜利所需口碑（满刻度为 5★）</td></tr>
+                <tr><td><code>HOLD_PERFECT</code> / <code>HOLD_OK</code></td><td><code>0.5</code> / <code>1.5</code></td><td>火候完美 / 合格容差（秒）</td></tr>
+                <tr><td><code>SAVE_KEY</code></td><td><code>'nightmarket_save_v1'</code></td><td>localStorage 存档键</td></tr>
+                <tr><td><code>DISHES[]</code></td><td>§5.3</td><td>6 道菜的配方与价格</td></tr>
+                <tr><td><code>UPGRADES[]</code></td><td>§5.8</td><td>7 项升级与价格</td></tr>
+                <tr><td><code>EVENTS[]</code></td><td>§5.7</td><td>3 种随机事件配置</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 07 问题与解决 -->
+      <section id="issues">
+        <div class="sec-head"><span class="sec-num">07</span><h2>开发过程中遇到的问题和解决方式 <span class="en">/ Issues &amp; Fixes</span></h2></div>
+
+        <div class="prob">
+          <h3>问题 1 · 场景之间状态丢失 <span class="en">/ State lost between scenes</span></h3>
+          <div class="row"><span class="k">现象 / Issue</span><span>从 NightScene 跳到 SummaryScene 时，money / reputation 偶尔归零。</span></div>
+          <div class="row"><span class="k">原因 / Cause</span><span>Phaser 切换 Scene 会销毁旧场景内存中的非全局对象。</span></div>
+          <div class="row"><span class="k">解决 / Fix</span><span>跨场景数据挂载到 <code>window.GameState</code> 单例，并在每次结算后写入 <code>localStorage</code> 兜底。</span></div>
+        </div>
+
+        <div class="prob">
+          <h3>问题 2 · Hold 步骤被判误 <span class="en">/ Hold-step misjudged</span></h3>
+          <div class="row"><span class="k">现象 / Issue</span><span>GRILL hold 时长精度太低，±1.5s 区间常误判。</span></div>
+          <div class="row"><span class="k">原因 / Cause</span><span>用 <code>setInterval</code> 累积时间，存在帧间漂移。</span></div>
+          <div class="row"><span class="k">解决 / Fix</span><span>改用 Phaser <code>time.addEvent</code> + <code>this.time.now</code> 计算毫秒差，精度从 ~50ms 提升到 ~5ms。</span></div>
+        </div>
+
+        <div class="prob">
+          <h3>问题 3 · CDN 加载失败黑屏 <span class="en">/ Black screen on CDN failure</span></h3>
+          <div class="row"><span class="k">现象 / Issue</span><span>断网打开 index.html 一片空白，无提示。</span></div>
+          <div class="row"><span class="k">解决 / Fix</span><span><code>&lt;body&gt;</code> 末尾加 onerror 提示，README 明确要求联网（部署环境为 GitHub Pages）。</span></div>
+        </div>
+
+        <div class="prob">
+          <h3>问题 4 · 库存 / 工作台可用性联动 <span class="en">/ Stock↔station coupling</span></h3>
+          <div class="row"><span class="k">现象 / Issue</span><span>库存为 0 时工作台仍可点击，造成"幽灵步骤"。</span></div>
+          <div class="row"><span class="k">解决 / Fix</span><span>Station 的 <code>click()</code> 入口读取对应食材库存，&lt;= 0 时 <code>setInteractive(false)</code> 并灰显。</span></div>
+        </div>
+      </section>
+
+      <!-- 08 总结与未来 -->
+      <section id="summary">
+        <div class="sec-head"><span class="sec-num">08</span><h2>总结与未来改进 <span class="en">/ Summary &amp; Future Work</span></h2></div>
+        <div class="panel">
+          <h3>8.1 项目总结 <span class="en">/ Summary</span></h3>
+          <p class="zh-en">NIGHT MARKET 在 7 个夜晚内构建了一条由浅入深的体验曲线：夜 1 教学降门槛；夜 2–3 引入更多菜式与更快客流形成首次节奏冲击；夜 4–7 在随机事件、库存压力、口碑临界点三方面叠加张力。技术层面，<b>单文件 + Phaser + 程序化美术 + Web Audio</b> 的组合证明"零外部资源也能做出有氛围感的小游戏"，部署极简（一个 GitHub Pages 链接），亦便于通过修改 CONFIG 调优。
+            <span class="en">The game builds a gentle-to-steep curve across 7 nights. Technically, the single-file + Phaser + procedural art + Web Audio combo proves that a zero-asset, atmospheric game is viable and trivially deployable via one GitHub Pages link, with easy CONFIG-based tuning.</span></p>
+        </div>
+        <div class="panel">
+          <h3>8.2 未来改进 <span class="en">/ Future Work</span></h3>
+          <ul>
+            <li>菜品扩展：在现有 6 道（含 2 道商店解锁菜）之外加入更多东南亚小吃。</li>
+            <li>多摊位 / 雇 AI 助手分担工作。</li>
+            <li>关卡编辑器：把 CONFIG 暴露为可视化 UI。</li>
+            <li>排行榜 / 战绩分享（轻后端或 GitHub Issue）。</li>
+            <li>本地化：简中 / 繁中 / 英文切换（i18n）。</li>
+            <li>无障碍：键盘操作替代鼠标。</li>
+            <li>音效升级：Web Audio 合成 BGM。</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 09 反馈 -->
+      <section id="feedback">
+        <div class="sec-head"><span class="sec-num">09</span><h2>反馈收集方式与反馈总结 <span class="en">/ Feedback</span></h2></div>
+
+        <div class="panel">
+          <h3>9.1 收集方式 <span class="en">/ How We Collected</span></h3>
+          <ul>
+            <li><b>渠道 Channel</b>：微信多个同学 / 朋友群。<span class="en-line">Multiple WeChat groups (classmates &amp; friends).</span></li>
+            <li><b>方式 Method</b>：群内发布介绍文案 + 试玩链接，邀请大家试玩后留言。<span class="en-line">Posted intro copy + play link, invited feedback.</span></li>
+            <li><b>时间 Time</b>：2026-09-21 11:20–12:01。</li>
+            <li><b>规模 Scale</b>：11 位群友，13 条有效反馈，无明确 Bug / 崩溃报告。<span class="en-line">11 responders, 13 valid items, no bug/crash reports.</span></li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h3>9.2 反馈总结（概括） <span class="en">/ Feedback Summary</span></h3>
+          <p class="zh-en"><b>好评集中 <span class="en" style="display:inline;">/ What players loved</span></b></p>
+          <ul>
+            <li>像素美术与夜市氛围（灯笼、夜色、蒸汽）是最大记忆点（5/11 主动提及）。<span class="en-line">Pixel art &amp; night-market atmosphere — the strongest hook.</span></li>
+            <li>核心玩法循环（接单→烹饪→出餐）被普遍认为"有操作感、上头"。<span class="en-line">Core loop felt skillful and addictive.</span></li>
+          </ul>
+          <p class="zh-en" style="margin-top:16px;"><b>主要建议（已按优先级归纳） <span class="en" style="display:inline;">/ Top suggestions</span></b></p>
+          <ul>
+            <li><span class="badge p0">P0</span> 低成本高收益：强化新手引导、耐心条临近耗尽时闪烁变色、出餐时 +$xx 金币飘字。</li>
+            <li><span class="badge p1">P1</span> 短期规划：轻量 BGM、中文界面（i18n）、排行榜 / 战绩分享。</li>
+            <li><span class="badge p2">P2</span> 版本迭代：更多随机事件与特殊订单 / boss 夜、新菜品、厨师与顾客皮肤系统。</li>
+            <li>其他：后期夜晚略显重复、部分玩家呼吁汉化版（"看不懂 English"）。</li>
+          </ul>
+          <p class="zh-en" style="margin-top:16px;"><b>关键观察 <span class="en" style="display:inline;">/ Key observations</span></b></p>
+          <ul>
+            <li>当前部署版本基本稳定，无崩溃反馈。</li>
+            <li>宣传时建议直接附游戏部署直链，避免从落地页二次跳转造成流失。</li>
+            <li>汉化诉求真实存在，应尽早列入计划。</li>
+          </ul>
+          <p class="zh-en" style="margin-top:16px;">完整反馈明细（13 条原话 + 6 张原始聊天截图）见：
+            <a href="NIGHT-MARKET-Feedback-Report.html">玩家反馈报告 →</a></p>
+        </div>
+      </section>
+
+      <div class="cta">
+        <a class="btn" href="https://ndbac.github.io/thu-messy-kitchen/" target="_blank" rel="noopener">INSERT COIN · PLAY NIGHT MARKET</a>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap">
+        <span>NIGHT MARKET 夜市 · 9market-3chefs · NO.4</span>
+        <span>文档版本 v2.5（中英双语）· 最后更新 2026.09.21</span>
+      </div>
+    </footer>
+  </body>
+</html>

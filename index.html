@@ -2,18 +2,66 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="0; url=NIGHT-MARKET-Feedback-Report.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>正在跳转… · NIGHT MARKET 反馈报告</title>
+    <title>NIGHT MARKET 夜市 · 项目文档站</title>
+    <meta name="description" content="NIGHT MARKET（夜市）· 项目文档与玩家反馈报告" />
     <style>
-      body { margin: 0; min-height: 100vh; display: grid; place-items: center;
-        background: linear-gradient(180deg, #050819, #130044); color: #ffd55a;
-        font-family: "Courier New", Courier, monospace; text-align: center; }
-      a { color: #ffd55a; }
+      @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+      :root {
+        --neon: #4fa8ff; --glow: #a8e6ff; --gold: #ffcf5c; --flame: #ff8a3c;
+        --line: #2b4f8f; --text: #e8f2ff; --muted: #8fb0dd;
+        --pixel: "Press Start 2P", "Courier New", monospace;
+        --body: system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; min-height: 100vh; color: var(--text); font-family: var(--body);
+        background:
+          radial-gradient(circle at 20% 6%, rgba(79,168,255,.18), transparent 26rem),
+          radial-gradient(circle at 80% 14%, rgba(232,69,44,.12), transparent 22rem),
+          linear-gradient(180deg, #03060f, #061027 45%, #0a1c44);
+        display: grid; place-items: center; padding: 40px 22px;
+      }
+      .box { width: 100%; max-width: 880px; text-align: center; }
+      .kicker { font-family: var(--pixel); font-size: 9px; color: var(--flame); letter-spacing: 1px; }
+      h1 { font-family: var(--pixel); font-size: clamp(15px, 3vw, 24px); line-height: 1.5; margin: 16px 0 0;
+        color: var(--glow); text-shadow: 0 0 6px var(--neon), 0 0 22px var(--neon); }
+      h1 .cn { display: block; margin-top: 12px; font-family: var(--body); font-weight: 900;
+        font-size: clamp(30px, 6vw, 50px); letter-spacing: 6px; color: #fff; text-shadow: 0 0 10px var(--neon), 0 0 30px var(--neon); }
+      .sub { color: var(--muted); margin: 18px 0 34px; font-size: 14px; }
+      .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+      .card {
+        display: block; text-align: left; border: 3px solid var(--line); background: rgba(9,26,60,.86);
+        padding: 22px; box-shadow: 0 0 24px rgba(79,168,255,.2); transition: transform .12s ease, box-shadow .12s ease;
+      }
+      .card:hover { transform: translateY(-3px); box-shadow: 0 0 34px rgba(79,168,255,.45); }
+      .card .n { font-family: var(--pixel); font-size: 9px; color: var(--gold); }
+      .card h2 { margin: 14px 0 8px; font-size: 20px; color: #fff; }
+      .card p { margin: 0; color: var(--muted); font-size: 13.5px; }
+      .card .go { display: inline-block; margin-top: 16px; font-family: var(--pixel); font-size: 9px;
+        color: #04122b; background: var(--glow); border: 2px solid #0b3a66; padding: 7px 11px; }
+      @media (max-width: 680px) { .cards { grid-template-columns: 1fr; } }
     </style>
   </head>
   <body>
-    <p>正在打开《NIGHT MARKET》玩家反馈报告…<br />
-    若未自动跳转，请 <a href="NIGHT-MARKET-Feedback-Report.html">点击这里</a>。</p>
+    <div class="box">
+      <div class="kicker">INSERT COIN · PRESS START</div>
+      <h1>NIGHT MARKET<span class="cn">夜　市</span></h1>
+      <p class="sub">像素风夜市美食摊经营模拟游戏 · 9market-3chefs（NO.4）· 26–27 AIID + IID Capstone Project</p>
+      <div class="cards">
+        <a class="card" href="NIGHT-MARKET-Project-Doc.html">
+          <div class="n">01</div>
+          <h2>项目文档 / Project Doc</h2>
+          <p>项目信息、部署与仓库链接、海报、玩法与核心机制、技术栈与架构、开发问题、总结与未来改进、反馈总结（中英双语 v2.5）。</p>
+          <span class="go">OPEN DOC ↗</span>
+        </a>
+        <a class="card" href="NIGHT-MARKET-Feedback-Report.html">
+          <div class="n">02</div>
+          <h2>玩家反馈报告 / Feedback</h2>
+          <p>13 条玩家反馈明细、好评与建议主题分析、P0–P2 改进行动清单，附 6 张微信群原始聊天截图。</p>
+          <span class="go">OPEN REPORT ↗</span>
+        </a>
+      </div>
+    </div>
   </body>
 </html>
