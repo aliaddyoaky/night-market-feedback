@@ -26,6 +26,11 @@
 - **落地页 Landing Page**：[https://vvvv788.github.io/night-market-landing/](https://vvvv788.github.io/night-market-landing/)
 - **游戏部署 Game**：[https://ndbac.github.io/thu-messy-kitchen/](https://ndbac.github.io/thu-messy-kitchen/)
 
+### 配套文档 / Related Docs
+
+- **玩家反馈报告 Feedback Report**：[https://aliaddyoaky.github.io/night-market-feedback/NIGHT-MARKET-Feedback-Report.html](https://aliaddyoaky.github.io/night-market-feedback/NIGHT-MARKET-Feedback-Report.html)
+- **项目文档 Project Doc**：[https://aliaddyoaky.github.io/night-market-feedback/NIGHT-MARKET-Project-Doc.html](https://aliaddyoaky.github.io/night-market-feedback/NIGHT-MARKET-Project-Doc.html)
+
 ---
 
 ## 3. 仓库链接 / Repository
